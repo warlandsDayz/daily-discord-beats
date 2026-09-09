@@ -144,4 +144,25 @@ client.on(Events.InteractionCreate, async (interaction) => {
   }
 });
 
-client.login(DISCORD_BOT_TOKEN);
+client.login(DISCORD_BOT_TOKEN).catch((error) => {
+  const message = String(error?.message ?? error);
+  if (message.includes("disallowed intents")) {
+    console.error(
+      [
+        "",
+        "❌ Discord refuse la connexion : l'intent SERVER MEMBERS n'est pas activé.",
+        "   → Developer Portal > ton application > Bot > active SERVER MEMBERS INTENT,",
+        "     puis : sudo systemctl restart rsa-bot",
+        "   → Ou, si tu ne veux pas du message de bienvenue :",
+        "     ajoute DISCORD_ENABLE_WELCOME=false dans le .env",
+        "",
+      ].join("\n"),
+    );
+  } else if (message.includes("TOKEN_INVALID")) {
+    console.error("❌ Token invalide : recopie DISCORD_BOT_TOKEN depuis le Developer Portal.");
+  } else {
+    console.error("❌ Connexion Discord impossible :", error);
+  }
+  process.exit(1);
+});
+
