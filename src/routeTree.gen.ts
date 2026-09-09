@@ -10,6 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthenticatedChefRouteImport } from './routes/_authenticated/chef'
+import { Route as AuthenticatedPanelRouteImport } from './routes/_authenticated/panel'
+import { Route as AuthIndexRouteImport } from './routes/auth/index'
+import { Route as AuthSessionRouteImport } from './routes/auth/session'
 import { Route as ApiPublicCronDailyRadioRouteImport } from './routes/api/public/cron/daily-radio'
 import { Route as ApiPublicDiscordInteractionsRouteImport } from './routes/api/public/discord/interactions'
 import { Route as ApiPublicAuthDiscordCallbackRouteImport } from './routes/api/public/auth/discord/callback'
@@ -18,6 +23,30 @@ import { Route as ApiPublicAuthDiscordLoginRouteImport } from './routes/api/publ
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedChefRoute = AuthenticatedChefRouteImport.update({
+  id: '/chef',
+  path: '/chef',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedPanelRoute = AuthenticatedPanelRouteImport.update({
+  id: '/panel',
+  path: '/panel',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthIndexRoute = AuthIndexRouteImport.update({
+  id: '/auth/',
+  path: '/auth/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthSessionRoute = AuthSessionRouteImport.update({
+  id: '/auth/session',
+  path: '/auth/session',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicCronDailyRadioRoute = ApiPublicCronDailyRadioRouteImport.update({
@@ -46,6 +75,10 @@ const ApiPublicAuthDiscordLoginRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/chef': typeof AuthenticatedChefRoute
+  '/panel': typeof AuthenticatedPanelRoute
+  '/auth/session': typeof AuthSessionRoute
+  '/auth/': typeof AuthIndexRoute
   '/api/public/cron/daily-radio': typeof ApiPublicCronDailyRadioRoute
   '/api/public/discord/interactions': typeof ApiPublicDiscordInteractionsRoute
   '/api/public/auth/discord/callback': typeof ApiPublicAuthDiscordCallbackRoute
@@ -53,6 +86,10 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/chef': typeof AuthenticatedChefRoute
+  '/panel': typeof AuthenticatedPanelRoute
+  '/auth/session': typeof AuthSessionRoute
+  '/auth': typeof AuthIndexRoute
   '/api/public/cron/daily-radio': typeof ApiPublicCronDailyRadioRoute
   '/api/public/discord/interactions': typeof ApiPublicDiscordInteractionsRoute
   '/api/public/auth/discord/callback': typeof ApiPublicAuthDiscordCallbackRoute
@@ -61,6 +98,11 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/_authenticated/chef': typeof AuthenticatedChefRoute
+  '/_authenticated/panel': typeof AuthenticatedPanelRoute
+  '/auth/session': typeof AuthSessionRoute
+  '/auth/': typeof AuthIndexRoute
   '/api/public/cron/daily-radio': typeof ApiPublicCronDailyRadioRoute
   '/api/public/discord/interactions': typeof ApiPublicDiscordInteractionsRoute
   '/api/public/auth/discord/callback': typeof ApiPublicAuthDiscordCallbackRoute
@@ -70,6 +112,10 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/chef'
+    | '/panel'
+    | '/auth/session'
+    | '/auth/'
     | '/api/public/cron/daily-radio'
     | '/api/public/discord/interactions'
     | '/api/public/auth/discord/callback'
@@ -77,6 +123,10 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/chef'
+    | '/panel'
+    | '/auth/session'
+    | '/auth'
     | '/api/public/cron/daily-radio'
     | '/api/public/discord/interactions'
     | '/api/public/auth/discord/callback'
@@ -84,6 +134,11 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
+    | '/_authenticated/chef'
+    | '/_authenticated/panel'
+    | '/auth/session'
+    | '/auth/'
     | '/api/public/cron/daily-radio'
     | '/api/public/discord/interactions'
     | '/api/public/auth/discord/callback'
@@ -92,6 +147,9 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthSessionRoute: typeof AuthSessionRoute
+  AuthIndexRoute: typeof AuthIndexRoute
   ApiPublicCronDailyRadioRoute: typeof ApiPublicCronDailyRadioRoute
   ApiPublicDiscordInteractionsRoute: typeof ApiPublicDiscordInteractionsRoute
   ApiPublicAuthDiscordCallbackRoute: typeof ApiPublicAuthDiscordCallbackRoute
@@ -105,6 +163,41 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/chef': {
+      id: '/_authenticated/chef'
+      path: '/chef'
+      fullPath: '/chef'
+      preLoaderRoute: typeof AuthenticatedChefRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/panel': {
+      id: '/_authenticated/panel'
+      path: '/panel'
+      fullPath: '/panel'
+      preLoaderRoute: typeof AuthenticatedPanelRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/auth/': {
+      id: '/auth/'
+      path: '/auth'
+      fullPath: '/auth/'
+      preLoaderRoute: typeof AuthIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/session': {
+      id: '/auth/session'
+      path: '/auth/session'
+      fullPath: '/auth/session'
+      preLoaderRoute: typeof AuthSessionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/cron/daily-radio': {
@@ -138,8 +231,24 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedChefRoute: typeof AuthenticatedChefRoute
+  AuthenticatedPanelRoute: typeof AuthenticatedPanelRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedChefRoute: AuthenticatedChefRoute,
+  AuthenticatedPanelRoute: AuthenticatedPanelRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthSessionRoute: AuthSessionRoute,
+  AuthIndexRoute: AuthIndexRoute,
   ApiPublicCronDailyRadioRoute: ApiPublicCronDailyRadioRoute,
   ApiPublicDiscordInteractionsRoute: ApiPublicDiscordInteractionsRoute,
   ApiPublicAuthDiscordCallbackRoute: ApiPublicAuthDiscordCallbackRoute,
