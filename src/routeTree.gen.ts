@@ -10,33 +10,150 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthenticatedChefRouteImport } from './routes/_authenticated/chef'
+import { Route as AuthenticatedPanelRouteImport } from './routes/_authenticated/panel'
+import { Route as AuthIndexRouteImport } from './routes/auth/index'
+import { Route as AuthSessionRouteImport } from './routes/auth/session'
+import { Route as ApiPublicCronDailyRadioRouteImport } from './routes/api/public/cron/daily-radio'
+import { Route as ApiPublicDiscordInteractionsRouteImport } from './routes/api/public/discord/interactions'
+import { Route as ApiPublicAuthDiscordCallbackRouteImport } from './routes/api/public/auth/discord/callback'
+import { Route as ApiPublicAuthDiscordLoginRouteImport } from './routes/api/public/auth/discord/login'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedChefRoute = AuthenticatedChefRouteImport.update({
+  id: '/chef',
+  path: '/chef',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedPanelRoute = AuthenticatedPanelRouteImport.update({
+  id: '/panel',
+  path: '/panel',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthIndexRoute = AuthIndexRouteImport.update({
+  id: '/auth/',
+  path: '/auth/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthSessionRoute = AuthSessionRouteImport.update({
+  id: '/auth/session',
+  path: '/auth/session',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicCronDailyRadioRoute = ApiPublicCronDailyRadioRouteImport.update({
+  id: '/api/public/cron/daily-radio',
+  path: '/api/public/cron/daily-radio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicDiscordInteractionsRoute =
+  ApiPublicDiscordInteractionsRouteImport.update({
+    id: '/api/public/discord/interactions',
+    path: '/api/public/discord/interactions',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicAuthDiscordCallbackRoute =
+  ApiPublicAuthDiscordCallbackRouteImport.update({
+    id: '/api/public/auth/discord/callback',
+    path: '/api/public/auth/discord/callback',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicAuthDiscordLoginRoute =
+  ApiPublicAuthDiscordLoginRouteImport.update({
+    id: '/api/public/auth/discord/login',
+    path: '/api/public/auth/discord/login',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/chef': typeof AuthenticatedChefRoute
+  '/panel': typeof AuthenticatedPanelRoute
+  '/auth/session': typeof AuthSessionRoute
+  '/auth/': typeof AuthIndexRoute
+  '/api/public/cron/daily-radio': typeof ApiPublicCronDailyRadioRoute
+  '/api/public/discord/interactions': typeof ApiPublicDiscordInteractionsRoute
+  '/api/public/auth/discord/callback': typeof ApiPublicAuthDiscordCallbackRoute
+  '/api/public/auth/discord/login': typeof ApiPublicAuthDiscordLoginRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/chef': typeof AuthenticatedChefRoute
+  '/panel': typeof AuthenticatedPanelRoute
+  '/auth/session': typeof AuthSessionRoute
+  '/auth': typeof AuthIndexRoute
+  '/api/public/cron/daily-radio': typeof ApiPublicCronDailyRadioRoute
+  '/api/public/discord/interactions': typeof ApiPublicDiscordInteractionsRoute
+  '/api/public/auth/discord/callback': typeof ApiPublicAuthDiscordCallbackRoute
+  '/api/public/auth/discord/login': typeof ApiPublicAuthDiscordLoginRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/_authenticated/chef': typeof AuthenticatedChefRoute
+  '/_authenticated/panel': typeof AuthenticatedPanelRoute
+  '/auth/session': typeof AuthSessionRoute
+  '/auth/': typeof AuthIndexRoute
+  '/api/public/cron/daily-radio': typeof ApiPublicCronDailyRadioRoute
+  '/api/public/discord/interactions': typeof ApiPublicDiscordInteractionsRoute
+  '/api/public/auth/discord/callback': typeof ApiPublicAuthDiscordCallbackRoute
+  '/api/public/auth/discord/login': typeof ApiPublicAuthDiscordLoginRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/chef'
+    | '/panel'
+    | '/auth/session'
+    | '/auth/'
+    | '/api/public/cron/daily-radio'
+    | '/api/public/discord/interactions'
+    | '/api/public/auth/discord/callback'
+    | '/api/public/auth/discord/login'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/chef'
+    | '/panel'
+    | '/auth/session'
+    | '/auth'
+    | '/api/public/cron/daily-radio'
+    | '/api/public/discord/interactions'
+    | '/api/public/auth/discord/callback'
+    | '/api/public/auth/discord/login'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/_authenticated/chef'
+    | '/_authenticated/panel'
+    | '/auth/session'
+    | '/auth/'
+    | '/api/public/cron/daily-radio'
+    | '/api/public/discord/interactions'
+    | '/api/public/auth/discord/callback'
+    | '/api/public/auth/discord/login'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthSessionRoute: typeof AuthSessionRoute
+  AuthIndexRoute: typeof AuthIndexRoute
+  ApiPublicCronDailyRadioRoute: typeof ApiPublicCronDailyRadioRoute
+  ApiPublicDiscordInteractionsRoute: typeof ApiPublicDiscordInteractionsRoute
+  ApiPublicAuthDiscordCallbackRoute: typeof ApiPublicAuthDiscordCallbackRoute
+  ApiPublicAuthDiscordLoginRoute: typeof ApiPublicAuthDiscordLoginRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +165,94 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/chef': {
+      id: '/_authenticated/chef'
+      path: '/chef'
+      fullPath: '/chef'
+      preLoaderRoute: typeof AuthenticatedChefRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/panel': {
+      id: '/_authenticated/panel'
+      path: '/panel'
+      fullPath: '/panel'
+      preLoaderRoute: typeof AuthenticatedPanelRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/auth/': {
+      id: '/auth/'
+      path: '/auth'
+      fullPath: '/auth/'
+      preLoaderRoute: typeof AuthIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/session': {
+      id: '/auth/session'
+      path: '/auth/session'
+      fullPath: '/auth/session'
+      preLoaderRoute: typeof AuthSessionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/daily-radio': {
+      id: '/api/public/cron/daily-radio'
+      path: '/api/public/cron/daily-radio'
+      fullPath: '/api/public/cron/daily-radio'
+      preLoaderRoute: typeof ApiPublicCronDailyRadioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/discord/interactions': {
+      id: '/api/public/discord/interactions'
+      path: '/api/public/discord/interactions'
+      fullPath: '/api/public/discord/interactions'
+      preLoaderRoute: typeof ApiPublicDiscordInteractionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/auth/discord/callback': {
+      id: '/api/public/auth/discord/callback'
+      path: '/api/public/auth/discord/callback'
+      fullPath: '/api/public/auth/discord/callback'
+      preLoaderRoute: typeof ApiPublicAuthDiscordCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/auth/discord/login': {
+      id: '/api/public/auth/discord/login'
+      path: '/api/public/auth/discord/login'
+      fullPath: '/api/public/auth/discord/login'
+      preLoaderRoute: typeof ApiPublicAuthDiscordLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedChefRoute: typeof AuthenticatedChefRoute
+  AuthenticatedPanelRoute: typeof AuthenticatedPanelRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedChefRoute: AuthenticatedChefRoute,
+  AuthenticatedPanelRoute: AuthenticatedPanelRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthSessionRoute: AuthSessionRoute,
+  AuthIndexRoute: AuthIndexRoute,
+  ApiPublicCronDailyRadioRoute: ApiPublicCronDailyRadioRoute,
+  ApiPublicDiscordInteractionsRoute: ApiPublicDiscordInteractionsRoute,
+  ApiPublicAuthDiscordCallbackRoute: ApiPublicAuthDiscordCallbackRoute,
+  ApiPublicAuthDiscordLoginRoute: ApiPublicAuthDiscordLoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
