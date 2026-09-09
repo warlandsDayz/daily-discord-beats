@@ -1,11 +1,20 @@
-// Bot Discord RSA - se connecte a Discord en permanence et parle au site RSA.
+// Bot Discord RSA — connecté en permanence, parle au site RSA.
 import "dotenv/config";
-import { Client, GatewayIntentBits, MessageFlags } from "discord.js";
+import { Client, Events, GatewayIntentBits, MessageFlags, Partials } from "discord.js";
+import {
+  emptyRadioEmbed,
+  errorEmbed,
+  infoEmbed,
+  newRadioEmbed,
+  radioEmbed,
+  welcomeEmbed,
+} from "./embeds.js";
 
 const {
   DISCORD_BOT_TOKEN,
   RSA_API_URL = "https://rsa.baccuarnaud.dev",
   RSA_BOT_SECRET,
+  DISCORD_WELCOME_CHANNEL_ID,
 } = process.env;
 
 if (!DISCORD_BOT_TOKEN || !RSA_BOT_SECRET) {
@@ -13,8 +22,10 @@ if (!DISCORD_BOT_TOKEN || !RSA_BOT_SECRET) {
   process.exit(1);
 }
 
+const SITE = RSA_API_URL.replace(/\/$/, "");
+
 const api = async (method, body) => {
-  const res = await fetch(`${RSA_API_URL.replace(/\/$/, "")}/api/public/bot/radio`, {
+  const res = await fetch(`${SITE}/api/public/bot/radio`, {
     method,
     headers: {
       "content-type": "application/json",
@@ -27,13 +38,35 @@ const api = async (method, body) => {
   return JSON.parse(text);
 };
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
-
-client.once("clientReady", (c) => {
-  console.log(`Bot connecte en tant que ${c.user.tag}`);
+const client = new Client({
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
+  partials: [Partials.GuildMember],
 });
 
-client.on("interactionCreate", async (interaction) => {
+client.once(Events.ClientReady, (c) => {
+  console.log(`Bot connecté en tant que ${c.user.tag}`);
+  c.user.setPresence({
+    activities: [{ name: "les ondes RSA 📻", type: 3 }],
+    status: "online",
+  });
+});
+
+// --- Bienvenue ---------------------------------------------------------------
+client.on(Events.GuildMemberAdd, async (member) => {
+  try {
+    const channel =
+      (DISCORD_WELCOME_CHANNEL_ID &&
+        (await member.guild.channels.fetch(DISCORD_WELCOME_CHANNEL_ID).catch(() => null))) ||
+      member.guild.systemChannel;
+    if (!channel?.isTextBased()) return;
+    await channel.send({ content: `${member}`, embeds: [welcomeEmbed(member)] });
+  } catch (error) {
+    console.error("[welcome]", error);
+  }
+});
+
+// --- Commandes ---------------------------------------------------------------
+client.on(Events.InteractionCreate, async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
 
   const actor = `${interaction.user.username} (${interaction.user.id})`;
@@ -42,33 +75,59 @@ client.on("interactionCreate", async (interaction) => {
     if (interaction.commandName === "radio-actuelle") {
       await interaction.deferReply({ flags: MessageFlags.Ephemeral });
       const data = await api("GET");
-      await interaction.editReply(
-        data.frequency
-          ? `📻 Frequence en cours : \`${Number(data.frequency).toFixed(1)}\``
-          : "Aucune frequence enregistree pour le moment.",
-      );
+      await interaction.editReply({
+        embeds: [
+          data.frequency
+            ? radioEmbed(data.frequency, {
+                note: data.for_date ? `Générée le ${data.for_date}` : undefined,
+              })
+            : emptyRadioEmbed(),
+        ],
+      });
       return;
     }
 
     if (interaction.commandName === "radio") {
-      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+      await interaction.deferReply();
       const data = await api("POST", { actor });
-      await interaction.editReply(
-        `Nouvelle frequence generee : \`${Number(data.frequency).toFixed(1)}\`${
-          data.posted ? "" : " (publication dans le salon impossible)"
-        }`,
-      );
+      await interaction.editReply({
+        embeds: [
+          newRadioEmbed(data.frequency, { actor: `<@${interaction.user.id}>`, posted: data.posted }),
+        ],
+      });
+      return;
+    }
+
+    if (interaction.commandName === "rsa") {
+      await interaction.reply({
+        flags: MessageFlags.Ephemeral,
+        embeds: [
+          infoEmbed(
+            "🖤 Racailles Sans Avenir",
+            [
+              "**Commandes disponibles**",
+              "`/radio` — génère et annonce une nouvelle fréquence",
+              "`/radio-actuelle` — affiche la fréquence en cours",
+              "`/rsa` — ce message",
+              "",
+              `**Site du crew** : ${SITE}`,
+              `**Espace membre** : ${SITE}/auth`,
+            ].join("\n"),
+          ),
+        ],
+      });
       return;
     }
   } catch (error) {
     console.error(error);
-    const message = "Une erreur est survenue, reessaie dans un instant.";
+    const payload = {
+      embeds: [errorEmbed("Une erreur est survenue, réessaie dans un instant.")],
+      flags: MessageFlags.Ephemeral,
+    };
     if (interaction.deferred || interaction.replied) {
-      await interaction.editReply(message).catch(() => {});
+      await interaction.editReply({ embeds: payload.embeds }).catch(() => {});
     } else {
-      await interaction
-        .reply({ content: message, flags: MessageFlags.Ephemeral })
-        .catch(() => {});
+      await interaction.reply(payload).catch(() => {});
     }
   }
 });
