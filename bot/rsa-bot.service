@@ -1,0 +1,16 @@
+[Unit]
+Description=Bot Discord RSA
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/rsa-bot/bot
+ExecStart=/usr/bin/node index.js
+Restart=always
+RestartSec=5
+User=rsa
+EnvironmentFile=/opt/rsa-bot/bot/.env
+
+[Install]
+WantedBy=multi-user.target

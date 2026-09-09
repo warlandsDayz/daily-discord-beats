@@ -15,6 +15,7 @@ import { Route as AuthenticatedChefRouteImport } from './routes/_authenticated/c
 import { Route as AuthenticatedPanelRouteImport } from './routes/_authenticated/panel'
 import { Route as AuthIndexRouteImport } from './routes/auth/index'
 import { Route as AuthSessionRouteImport } from './routes/auth/session'
+import { Route as ApiPublicBotRadioRouteImport } from './routes/api/public/bot/radio'
 import { Route as ApiPublicCronDailyRadioRouteImport } from './routes/api/public/cron/daily-radio'
 import { Route as ApiPublicDiscordInteractionsRouteImport } from './routes/api/public/discord/interactions'
 import { Route as ApiPublicAuthDiscordCallbackRouteImport } from './routes/api/public/auth/discord/callback'
@@ -49,6 +50,11 @@ const AuthSessionRoute = AuthSessionRouteImport.update({
   path: '/auth/session',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicBotRadioRoute = ApiPublicBotRadioRouteImport.update({
+  id: '/api/public/bot/radio',
+  path: '/api/public/bot/radio',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicCronDailyRadioRoute = ApiPublicCronDailyRadioRouteImport.update({
   id: '/api/public/cron/daily-radio',
   path: '/api/public/cron/daily-radio',
@@ -79,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/panel': typeof AuthenticatedPanelRoute
   '/auth/session': typeof AuthSessionRoute
   '/auth/': typeof AuthIndexRoute
+  '/api/public/bot/radio': typeof ApiPublicBotRadioRoute
   '/api/public/cron/daily-radio': typeof ApiPublicCronDailyRadioRoute
   '/api/public/discord/interactions': typeof ApiPublicDiscordInteractionsRoute
   '/api/public/auth/discord/callback': typeof ApiPublicAuthDiscordCallbackRoute
@@ -90,6 +97,7 @@ export interface FileRoutesByTo {
   '/panel': typeof AuthenticatedPanelRoute
   '/auth/session': typeof AuthSessionRoute
   '/auth': typeof AuthIndexRoute
+  '/api/public/bot/radio': typeof ApiPublicBotRadioRoute
   '/api/public/cron/daily-radio': typeof ApiPublicCronDailyRadioRoute
   '/api/public/discord/interactions': typeof ApiPublicDiscordInteractionsRoute
   '/api/public/auth/discord/callback': typeof ApiPublicAuthDiscordCallbackRoute
@@ -103,6 +111,7 @@ export interface FileRoutesById {
   '/_authenticated/panel': typeof AuthenticatedPanelRoute
   '/auth/session': typeof AuthSessionRoute
   '/auth/': typeof AuthIndexRoute
+  '/api/public/bot/radio': typeof ApiPublicBotRadioRoute
   '/api/public/cron/daily-radio': typeof ApiPublicCronDailyRadioRoute
   '/api/public/discord/interactions': typeof ApiPublicDiscordInteractionsRoute
   '/api/public/auth/discord/callback': typeof ApiPublicAuthDiscordCallbackRoute
@@ -116,6 +125,7 @@ export interface FileRouteTypes {
     | '/panel'
     | '/auth/session'
     | '/auth/'
+    | '/api/public/bot/radio'
     | '/api/public/cron/daily-radio'
     | '/api/public/discord/interactions'
     | '/api/public/auth/discord/callback'
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/panel'
     | '/auth/session'
     | '/auth'
+    | '/api/public/bot/radio'
     | '/api/public/cron/daily-radio'
     | '/api/public/discord/interactions'
     | '/api/public/auth/discord/callback'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/_authenticated/panel'
     | '/auth/session'
     | '/auth/'
+    | '/api/public/bot/radio'
     | '/api/public/cron/daily-radio'
     | '/api/public/discord/interactions'
     | '/api/public/auth/discord/callback'
@@ -150,6 +162,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthSessionRoute: typeof AuthSessionRoute
   AuthIndexRoute: typeof AuthIndexRoute
+  ApiPublicBotRadioRoute: typeof ApiPublicBotRadioRoute
   ApiPublicCronDailyRadioRoute: typeof ApiPublicCronDailyRadioRoute
   ApiPublicDiscordInteractionsRoute: typeof ApiPublicDiscordInteractionsRoute
   ApiPublicAuthDiscordCallbackRoute: typeof ApiPublicAuthDiscordCallbackRoute
@@ -198,6 +211,13 @@ declare module '@tanstack/react-router' {
       path: '/auth/session'
       fullPath: '/auth/session'
       preLoaderRoute: typeof AuthSessionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/bot/radio': {
+      id: '/api/public/bot/radio'
+      path: '/api/public/bot/radio'
+      fullPath: '/api/public/bot/radio'
+      preLoaderRoute: typeof ApiPublicBotRadioRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/cron/daily-radio': {
@@ -249,6 +269,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthSessionRoute: AuthSessionRoute,
   AuthIndexRoute: AuthIndexRoute,
+  ApiPublicBotRadioRoute: ApiPublicBotRadioRoute,
   ApiPublicCronDailyRadioRoute: ApiPublicCronDailyRadioRoute,
   ApiPublicDiscordInteractionsRoute: ApiPublicDiscordInteractionsRoute,
   ApiPublicAuthDiscordCallbackRoute: ApiPublicAuthDiscordCallbackRoute,
