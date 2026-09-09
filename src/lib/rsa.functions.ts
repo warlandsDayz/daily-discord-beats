@@ -1,11 +1,12 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { Database } from "@/integrations/supabase/types";
 
-async function assertChef(context: {
-  supabase: { rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown }> };
-  userId: string;
-}) {
+type ChefContext = { supabase: SupabaseClient<Database>; userId: string };
+
+async function assertChef(context: ChefContext) {
   const { data } = await context.supabase.rpc("has_role", {
     _user_id: context.userId,
     _role: "chef",
