@@ -14,16 +14,156 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      bot_logs: {
+        Row: {
+          action: string
+          actor: string | null
+          created_at: string
+          id: string
+          level: string
+          message: string | null
+        }
+        Insert: {
+          action: string
+          actor?: string | null
+          created_at?: string
+          id?: string
+          level?: string
+          message?: string | null
+        }
+        Update: {
+          action?: string
+          actor?: string | null
+          created_at?: string
+          id?: string
+          level?: string
+          message?: string | null
+        }
+        Relationships: []
+      }
+      bot_settings: {
+        Row: {
+          bot_username: string | null
+          channel_id: string | null
+          guild_id: string | null
+          id: boolean
+          updated_at: string
+        }
+        Insert: {
+          bot_username?: string | null
+          channel_id?: string | null
+          guild_id?: string | null
+          id?: boolean
+          updated_at?: string
+        }
+        Update: {
+          bot_username?: string | null
+          channel_id?: string | null
+          guild_id?: string | null
+          id?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          discord_id: string
+          global_name: string | null
+          id: string
+          is_active: boolean
+          rank: string
+          updated_at: string
+          username: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          discord_id: string
+          global_name?: string | null
+          id: string
+          is_active?: boolean
+          rank?: string
+          updated_at?: string
+          username: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          discord_id?: string
+          global_name?: string | null
+          id?: string
+          is_active?: boolean
+          rank?: string
+          updated_at?: string
+          username?: string
+        }
+        Relationships: []
+      }
+      radio_frequencies: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          for_date: string
+          frequency: number
+          id: string
+          source: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          for_date: string
+          frequency: number
+          id?: string
+          source?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          for_date?: string
+          frequency?: number
+          id?: string
+          source?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "membre" | "chef"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +290,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["membre", "chef"],
+    },
   },
 } as const
