@@ -138,9 +138,9 @@ export const updateMember = createServerFn({ method: "POST" })
     const { logBot } = await import("@/lib/radio.server");
     const actor = await actorLabel(context.userId);
 
-    const patch: Record<string, unknown> = {};
-    if (data.rank !== undefined) patch["rank"] = data.rank;
-    if (data.isActive !== undefined) patch["is_active"] = data.isActive;
+    const patch: Database["public"]["Tables"]["profiles"]["Update"] = {};
+    if (data.rank !== undefined) patch.rank = data.rank;
+    if (data.isActive !== undefined) patch.is_active = data.isActive;
     if (Object.keys(patch).length > 0) {
       const { error } = await supabaseAdmin.from("profiles").update(patch).eq("id", data.userId);
       if (error) throw new Error(error.message);
