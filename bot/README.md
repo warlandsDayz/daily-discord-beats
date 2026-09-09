@@ -1,8 +1,9 @@
 # Bot Discord RSA — installation sur un VPS Linux
 
 Ce dossier contient le bot à faire tourner sur ton serveur. Il se connecte à Discord
-en permanence, écoute les commandes `/radio` et `/radio-actuelle`, et demande au site
-`rsa.baccuarnaud.dev` de générer ou de lire la fréquence du jour.
+en permanence, souhaite la bienvenue aux nouveaux membres, écoute les commandes `/radio`,
+`/radio-actuelle` et `/rsa`, et demande au site `rsa.baccuarnaud.dev` de générer
+ou de lire la fréquence du jour. Toutes les réponses sont des embeds aux couleurs RSA.
 
 ---
 
@@ -49,6 +50,7 @@ Remplis :
 | `DISCORD_APPLICATION_ID` | Developer Portal → **General Information** → *Application ID*         |
 | `DISCORD_GUILD_ID`       | Discord → clic droit sur ton serveur → *Copier l'identifiant*         |
 | `RSA_API_URL`            | `https://rsa.baccuarnaud.dev`                                         |
+| `DISCORD_WELCOME_CHANNEL_ID` | salon de bienvenue (optionnel, sinon le salon système du serveur) |
 | `RSA_BOT_SECRET`         | la valeur du secret `RSA_CRON_SECRET` du site                         |
 
 Enregistre avec `Ctrl+O` puis `Ctrl+X`.
@@ -101,11 +103,15 @@ sudo useradd -r -s /usr/sbin/nologin rsa
 sudo chown -R rsa:rsa /opt/rsa-bot
 ```
 
-## 8. Inviter le bot sur le serveur
+## 8. Inviter le bot + activer le message de bienvenue
 
 Developer Portal → **OAuth2 → URL Generator** :
 - Scopes : `bot` et `applications.commands`
-- Permissions : `Send Messages`
+- Permissions : `Send Messages`, `Embed Links`
+
+**Important pour la bienvenue** : Developer Portal → **Bot** → active
+*SERVER MEMBERS INTENT*, puis redémarre le bot (`sudo systemctl restart rsa-bot`).
+Sans ça, Discord n'envoie pas les arrivées et le bot ne dira rien.
 
 Ouvre l'URL générée et choisis ton serveur. Vérifie que le bot a bien accès au salon
 où la fréquence doit être publiée.
