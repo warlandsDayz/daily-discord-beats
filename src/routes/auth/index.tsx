@@ -4,7 +4,7 @@ import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/rsa-logo.png";
 
-export const Route = createFileRoute("/auth")({
+export const Route = createFileRoute("/auth/")({
   validateSearch: z.object({ erreur: z.string().optional() }),
   head: () => ({
     meta: [
