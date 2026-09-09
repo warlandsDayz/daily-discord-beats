@@ -1,5 +1,5 @@
 // Server-only logic for the daily radio frequency.
-import { postChannelMessage } from "./discord.server";
+import { buildRadioEmbed, postChannelEmbed } from "./discord.server";
 
 export type RadioRow = {
   id: string;
@@ -84,9 +84,21 @@ export async function generateAndAnnounce(opts: {
       .maybeSingle();
     const channelId = settings?.channel_id ?? process.env["DISCORD_CHANNEL_ID"];
     if (channelId) {
-      await postChannelMessage(
+      await postChannelEmbed(
         channelId,
-        `📻 **Fréquence RSA du jour** : \`${frequency.toFixed(1)}\`\nRestez discrets. Nouvelle fréquence demain.`,
+        buildRadioEmbed(frequency, {
+          title:
+            opts.source === "cron"
+              ? "📻 Fréquence RSA du jour"
+              : "🔴 Nouvelle fréquence RSA",
+          source:
+            opts.source === "cron"
+              ? "Génération quotidienne"
+              : opts.source === "panel"
+                ? "Panel chef"
+                : "Commande Discord",
+          actor: opts.actor ?? null,
+        }),
       );
       posted = true;
     }
