@@ -33,6 +33,50 @@ export async function postChannelMessage(channelId: string, content: string) {
   });
 }
 
+export type DiscordEmbed = Record<string, unknown>;
+
+export async function postChannelEmbed(
+  channelId: string,
+  embed: DiscordEmbed,
+  content?: string,
+) {
+  return discordFetch(`/channels/${channelId}/messages`, {
+    method: "POST",
+    body: JSON.stringify({ ...(content ? { content } : {}), embeds: [embed] }),
+  });
+}
+
+const RSA_RED = 0xc1121f;
+const SITE_URL = "https://rsa.baccuarnaud.dev";
+
+/** Embed propre pour annoncer une fréquence dans le salon. */
+export function buildRadioEmbed(
+  frequency: number,
+  opts: { title?: string; source?: string; actor?: string | null } = {},
+): DiscordEmbed {
+  const freq = frequency.toFixed(1);
+  return {
+    author: { name: "Réseau radio RSA" },
+    title: opts.title ?? "📻 Fréquence RSA du jour",
+    description:
+      "Passez tous sur cette fréquence. Restez discrets.\n" +
+      "```ansi\n\u001b[1;31m" + freq + "\u001b[0m\n```",
+    color: RSA_RED,
+    thumbnail: { url: `${SITE_URL}/favicon.png` },
+    fields: [
+      { name: "Fréquence", value: `**${freq}**`, inline: true },
+      { name: "Plage", value: "30.0 – 512.0", inline: true },
+      ...(opts.source ? [{ name: "Origine", value: opts.source, inline: true }] : []),
+      ...(opts.actor ? [{ name: "Par", value: opts.actor, inline: true }] : []),
+    ],
+    footer: {
+      text: "RSA • Racailles Sans Avenir",
+      icon_url: `${SITE_URL}/favicon.png`,
+    },
+    timestamp: new Date().toISOString(),
+  };
+}
+
 export async function patchBotUser(payload: {
   username?: string;
   avatar?: string | null;

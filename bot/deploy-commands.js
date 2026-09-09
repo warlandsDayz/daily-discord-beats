@@ -1,4 +1,4 @@
-// Enregistre les commandes /radio et /radio-actuelle sur le serveur Discord.
+// Enregistre les commandes du bot sur le serveur Discord.
 // A lancer une fois : npm run deploy
 import "dotenv/config";
 import { REST, Routes, SlashCommandBuilder } from "discord.js";
@@ -13,11 +13,15 @@ if (!DISCORD_BOT_TOKEN || !DISCORD_APPLICATION_ID || !DISCORD_GUILD_ID) {
 const commands = [
   new SlashCommandBuilder()
     .setName("radio")
-    .setDescription("Genere une nouvelle frequence radio RSA")
+    .setDescription("Génère et annonce une nouvelle fréquence radio RSA")
     .toJSON(),
   new SlashCommandBuilder()
     .setName("radio-actuelle")
-    .setDescription("Affiche la frequence radio RSA en cours")
+    .setDescription("Affiche la fréquence radio RSA en cours")
+    .toJSON(),
+  new SlashCommandBuilder()
+    .setName("rsa")
+    .setDescription("Infos du crew et liste des commandes")
     .toJSON(),
 ];
 
@@ -28,4 +32,4 @@ await rest.put(
   { body: commands },
 );
 
-console.log("Commandes installees sur le serveur.");
+console.log("Commandes installées sur le serveur.");
