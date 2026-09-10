@@ -7,6 +7,7 @@ import {
   infoEmbed,
   newRadioEmbed,
   radioEmbed,
+  serverStatusEmbed,
   welcomeEmbed,
 } from "./embeds.js";
 
@@ -107,6 +108,14 @@ client.on(Events.InteractionCreate, async (interaction) => {
           newRadioEmbed(data.frequency, { actor: `<@${interaction.user.id}>`, posted: data.posted }),
         ],
       });
+      return;
+    }
+
+    if (interaction.commandName === "serveur") {
+      await interaction.deferReply();
+      const res = await fetch(`${SITE}/api/public/arma/status`);
+      const data = await res.json();
+      await interaction.editReply({ embeds: [serverStatusEmbed(data.status)] });
       return;
     }
 
