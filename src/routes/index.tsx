@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/rsa-logo.png";
+import { ArmaStatus } from "@/components/ArmaStatus";
 import hero from "@/assets/hero-street.jpg";
 
 export const Route = createFileRoute("/")({
@@ -110,6 +111,10 @@ function Index() {
             </a>
           </div>
         </div>
+      </section>
+
+      <section className="mx-auto max-w-5xl px-6 pt-16">
+        <ArmaStatus />
       </section>
 
       <section id="crew" className="mx-auto max-w-5xl px-6 py-20">
