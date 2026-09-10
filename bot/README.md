@@ -2,8 +2,10 @@
 
 Ce dossier contient le bot à faire tourner sur ton serveur. Il se connecte à Discord
 en permanence, souhaite la bienvenue aux nouveaux membres, écoute les commandes `/radio`,
-`/radio-actuelle` et `/rsa`, et demande au site `rsa.baccuarnaud.dev` de générer
-ou de lire la fréquence du jour. Toutes les réponses sont des embeds aux couleurs RSA.
+`/radio-actuelle`, `/rsa` et `/serveur`, et demande au site `rsa.baccuarnaud.dev` de générer
+ou de lire la fréquence du jour. `/serveur` affiche l'état du serveur Arma 3 suivi
+(en ligne / hors ligne et nombre de joueurs). Toutes les réponses sont des embeds
+aux couleurs RSA.
 
 ---
 
