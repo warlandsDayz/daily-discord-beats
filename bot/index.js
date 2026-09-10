@@ -49,16 +49,39 @@ const client = new Client({
   partials: [Partials.GuildMember],
 });
 
+// --- Statut : nombre de joueurs sur le serveur Arma ---------------------------
+async function updatePresence(c) {
+  try {
+    const res = await fetch(`${SITE}/api/public/arma/status`);
+    const data = await res.json();
+    const s = data?.status;
+    if (s?.online) {
+      c.user.setPresence({
+        activities: [
+          { name: `${s.players ?? 0}/${s.max_players || "?"} joueurs sur Altis`, type: 3 },
+        ],
+        status: "online",
+      });
+    } else {
+      c.user.setPresence({
+        activities: [{ name: "serveur hors ligne 🔴", type: 3 }],
+        status: "idle",
+      });
+    }
+  } catch (error) {
+    console.error("[presence]", error);
+  }
+}
+
 client.once(Events.ClientReady, (c) => {
   console.log(`Bot connecté en tant que ${c.user.tag}`);
   if (!WELCOME_ENABLED) {
     console.log("Message de bienvenue désactivé (DISCORD_ENABLE_WELCOME=false).");
   }
-  c.user.setPresence({
-    activities: [{ name: "les ondes RSA 📻", type: 3 }],
-    status: "online",
-  });
+  updatePresence(c);
+  setInterval(() => updatePresence(c), 60_000);
 });
+
 
 client.on(Events.Error, (error) => console.error("[discord]", error));
 process.on("unhandledRejection", (error) => console.error("[unhandled]", error));
