@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/rsa-logo.png";
+import { ArmaStatus } from "@/components/ArmaStatus";
 
 export const Route = createFileRoute("/_authenticated/panel")({
   head: () => ({
@@ -147,6 +148,8 @@ function Panel() {
                 Prochain changement dans environ {nextChangeLabel()}
               </p>
             </section>
+
+            <ArmaStatus className="mt-6" />
 
             <section className="mt-10">
               <h2 className="text-2xl">Dernières fréquences</h2>

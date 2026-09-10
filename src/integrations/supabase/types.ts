@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      arma_status: {
+        Row: {
+          addr: string | null
+          checked_at: string
+          event: string
+          id: string
+          map: string | null
+          max_players: number
+          online: boolean
+          players: number
+          server_name: string | null
+        }
+        Insert: {
+          addr?: string | null
+          checked_at?: string
+          event?: string
+          id?: string
+          map?: string | null
+          max_players?: number
+          online: boolean
+          players?: number
+          server_name?: string | null
+        }
+        Update: {
+          addr?: string | null
+          checked_at?: string
+          event?: string
+          id?: string
+          map?: string | null
+          max_players?: number
+          online?: boolean
+          players?: number
+          server_name?: string | null
+        }
+        Relationships: []
+      }
       bot_logs: {
         Row: {
           action: string
