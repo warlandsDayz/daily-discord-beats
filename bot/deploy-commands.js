@@ -23,6 +23,10 @@ const commands = [
     .setName("rsa")
     .setDescription("Infos du crew et liste des commandes")
     .toJSON(),
+  new SlashCommandBuilder()
+    .setName("serveur")
+    .setDescription("Affiche l'état du serveur Arma 3 et le nombre de joueurs")
+    .toJSON(),
 ];
 
 const rest = new REST({ version: "10" }).setToken(DISCORD_BOT_TOKEN);
