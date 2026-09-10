@@ -63,6 +63,29 @@ export function welcomeEmbed(member) {
     .setThumbnail(member.user.displayAvatarURL({ size: 256 }));
 }
 
+export function serverStatusEmbed(status) {
+  if (!status) {
+    return base(RSA_DARK)
+      .setAuthor({ name: "Serveur Arma 3 · RSA" })
+      .setTitle("Aucun relevé")
+      .setDescription("Le serveur n'a pas encore été relevé. Réessaie dans quelques minutes.");
+  }
+  const online = Boolean(status.online);
+  return base(online ? RSA_GREEN : RSA_DARK)
+    .setAuthor({ name: "Serveur Arma 3 · RSA" })
+    .setTitle(online ? "🟢 Serveur en ligne" : "🔴 Serveur hors ligne")
+    .setDescription(status.server_name ?? status.addr ?? "Serveur suivi")
+    .addFields(
+      {
+        name: "Joueurs",
+        value: `**${status.players ?? 0}/${status.max_players || "?"}** connectés`,
+        inline: true,
+      },
+      ...(status.map ? [{ name: "Carte", value: status.map, inline: true }] : []),
+      ...(status.addr ? [{ name: "Adresse", value: `\`${status.addr}\``, inline: true }] : []),
+    );
+}
+
 export function errorEmbed(message) {
   return base(RSA_DARK).setTitle("❌ Erreur").setDescription(message);
 }
