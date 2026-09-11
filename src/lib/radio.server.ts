@@ -1,5 +1,5 @@
 // Server-only logic for the daily radio frequency.
-import { buildRadioEmbed, postChannelEmbed } from "./discord.server";
+import { buildRadioEmbed, deleteChannelMessage, postChannelEmbed } from "./discord.server";
 
 export type RadioRow = {
   id: string;
@@ -8,7 +8,22 @@ export type RadioRow = {
   source: string;
   created_by: string | null;
   created_at: string;
+  discord_message_id?: string | null;
+  discord_channel_id?: string | null;
 };
+
+/** Salon où sont publiées les fréquences radio. */
+export async function radioChannelId(): Promise<string | null> {
+  const fromEnv = process.env["DISCORD_RADIO_CHANNEL_ID"];
+  if (fromEnv) return fromEnv;
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data } = await supabaseAdmin
+    .from("bot_settings")
+    .select("channel_id")
+    .eq("id", true)
+    .maybeSingle();
+  return data?.channel_id ?? process.env["DISCORD_CHANNEL_ID"] ?? null;
+}
 
 export function randomFrequency(exclude?: number | null): number {
   let value = 0;
