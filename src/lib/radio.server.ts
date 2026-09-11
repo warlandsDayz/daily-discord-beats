@@ -82,24 +82,30 @@ export async function generateAndAnnounce(opts: {
   }
 
   const frequency = randomFrequency(previous ? Number(previous.frequency) : null);
-  const { error } = await supabaseAdmin.from("radio_frequencies").insert({
-    frequency,
-    for_date: today,
-    source: opts.source,
-    created_by: opts.actor ?? null,
-  });
+  const { data: inserted, error } = await supabaseAdmin
+    .from("radio_frequencies")
+    .insert({
+      frequency,
+      for_date: today,
+      source: opts.source,
+      created_by: opts.actor ?? null,
+    })
+    .select("id")
+    .maybeSingle();
   if (error) throw new Error(error.message);
 
   let posted = false;
   try {
-    const { data: settings } = await supabaseAdmin
-      .from("bot_settings")
-      .select("channel_id")
-      .eq("id", true)
-      .maybeSingle();
-    const channelId = settings?.channel_id ?? process.env["DISCORD_CHANNEL_ID"];
+    const channelId = await radioChannelId();
     if (channelId) {
-      await postChannelEmbed(
+      // On efface l'annonce précédente pour ne garder qu'un seul message radio.
+      if (previous?.discord_message_id) {
+        await deleteChannelMessage(
+          previous.discord_channel_id ?? channelId,
+          previous.discord_message_id,
+        ).catch(() => {});
+      }
+      const message = (await postChannelEmbed(
         channelId,
         buildRadioEmbed(frequency, {
           title:
