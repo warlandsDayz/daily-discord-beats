@@ -120,8 +120,14 @@ export async function generateAndAnnounce(opts: {
                 : "Commande Discord",
           actor: opts.actor ?? null,
         }),
-      );
+      )) as { id?: string } | null;
       posted = true;
+      if (inserted?.id && message?.id) {
+        await supabaseAdmin
+          .from("radio_frequencies")
+          .update({ discord_message_id: message.id, discord_channel_id: channelId })
+          .eq("id", inserted.id);
+      }
     }
     await logBot(
       "radio",
