@@ -117,12 +117,15 @@ export async function pollArmaStatus(): Promise<{
   let announced = false;
   if (stateChanged) {
     try {
-      const { data: settings } = await supabaseAdmin
-        .from("bot_settings")
-        .select("channel_id")
-        .eq("id", true)
-        .maybeSingle();
-      const channelId = settings?.channel_id ?? process.env["DISCORD_CHANNEL_ID"];
+      let channelId = process.env["DISCORD_REBOOT_CHANNEL_ID"] ?? null;
+      if (!channelId) {
+        const { data: settings } = await supabaseAdmin
+          .from("bot_settings")
+          .select("channel_id")
+          .eq("id", true)
+          .maybeSingle();
+        channelId = settings?.channel_id ?? process.env["DISCORD_CHANNEL_ID"] ?? null;
+      }
       if (channelId && previous) {
         await postChannelEmbed(channelId, statusEmbed(status, status.online ? "up" : "down"));
         announced = true;
