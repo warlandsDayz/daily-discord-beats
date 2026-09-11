@@ -77,6 +77,11 @@ export function buildRadioEmbed(
   };
 }
 
+/** Supprime un message déjà publié (utilisé pour ne pas spammer le salon radio). */
+export async function deleteChannelMessage(channelId: string, messageId: string) {
+  return discordFetch(`/channels/${channelId}/messages/${messageId}`, { method: "DELETE" });
+}
+
 export async function patchBotUser(payload: {
   username?: string;
   avatar?: string | null;
