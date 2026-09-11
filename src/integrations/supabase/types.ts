@@ -141,6 +141,8 @@ export type Database = {
         Row: {
           created_at: string
           created_by: string | null
+          discord_channel_id: string | null
+          discord_message_id: string | null
           for_date: string
           frequency: number
           id: string
@@ -149,6 +151,8 @@ export type Database = {
         Insert: {
           created_at?: string
           created_by?: string | null
+          discord_channel_id?: string | null
+          discord_message_id?: string | null
           for_date: string
           frequency: number
           id?: string
@@ -157,6 +161,8 @@ export type Database = {
         Update: {
           created_at?: string
           created_by?: string | null
+          discord_channel_id?: string | null
+          discord_message_id?: string | null
           for_date?: string
           frequency?: number
           id?: string
