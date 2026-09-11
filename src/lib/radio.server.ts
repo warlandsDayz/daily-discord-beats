@@ -1,5 +1,5 @@
 // Server-only logic for the daily radio frequency.
-import { buildRadioEmbed, postChannelEmbed } from "./discord.server";
+import { buildRadioEmbed, deleteChannelMessage, postChannelEmbed } from "./discord.server";
 
 export type RadioRow = {
   id: string;
@@ -8,7 +8,22 @@ export type RadioRow = {
   source: string;
   created_by: string | null;
   created_at: string;
+  discord_message_id?: string | null;
+  discord_channel_id?: string | null;
 };
+
+/** Salon où sont publiées les fréquences radio. */
+export async function radioChannelId(): Promise<string | null> {
+  const fromEnv = process.env["DISCORD_RADIO_CHANNEL_ID"];
+  if (fromEnv) return fromEnv;
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data } = await supabaseAdmin
+    .from("bot_settings")
+    .select("channel_id")
+    .eq("id", true)
+    .maybeSingle();
+  return data?.channel_id ?? process.env["DISCORD_CHANNEL_ID"] ?? null;
+}
 
 export function randomFrequency(exclude?: number | null): number {
   let value = 0;
@@ -67,24 +82,30 @@ export async function generateAndAnnounce(opts: {
   }
 
   const frequency = randomFrequency(previous ? Number(previous.frequency) : null);
-  const { error } = await supabaseAdmin.from("radio_frequencies").insert({
-    frequency,
-    for_date: today,
-    source: opts.source,
-    created_by: opts.actor ?? null,
-  });
+  const { data: inserted, error } = await supabaseAdmin
+    .from("radio_frequencies")
+    .insert({
+      frequency,
+      for_date: today,
+      source: opts.source,
+      created_by: opts.actor ?? null,
+    })
+    .select("id")
+    .maybeSingle();
   if (error) throw new Error(error.message);
 
   let posted = false;
   try {
-    const { data: settings } = await supabaseAdmin
-      .from("bot_settings")
-      .select("channel_id")
-      .eq("id", true)
-      .maybeSingle();
-    const channelId = settings?.channel_id ?? process.env["DISCORD_CHANNEL_ID"];
+    const channelId = await radioChannelId();
     if (channelId) {
-      await postChannelEmbed(
+      // On efface l'annonce précédente pour ne garder qu'un seul message radio.
+      if (previous?.discord_message_id) {
+        await deleteChannelMessage(
+          previous.discord_channel_id ?? channelId,
+          previous.discord_message_id,
+        ).catch(() => {});
+      }
+      const message = (await postChannelEmbed(
         channelId,
         buildRadioEmbed(frequency, {
           title:
@@ -99,8 +120,14 @@ export async function generateAndAnnounce(opts: {
                 : "Commande Discord",
           actor: opts.actor ?? null,
         }),
-      );
+      )) as { id?: string } | null;
       posted = true;
+      if (inserted?.id && message?.id) {
+        await supabaseAdmin
+          .from("radio_frequencies")
+          .update({ discord_message_id: message.id, discord_channel_id: channelId })
+          .eq("id", inserted.id);
+      }
     }
     await logBot(
       "radio",
