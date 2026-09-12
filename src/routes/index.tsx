@@ -66,7 +66,7 @@ function Index() {
   }, []);
 
   return (
-    <main className="dossier-shell min-h-screen bg-background px-4 py-5 text-foreground sm:px-6 sm:py-10">
+    <main className="dossier-shell min-h-screen bg-background px-4 py-5 font-dossier-body text-foreground sm:px-6 sm:py-10">
       <article className="dossier-page relative mx-auto w-full max-w-5xl overflow-hidden border border-border bg-card shadow-2xl">
         <div className="absolute inset-x-0 top-0 h-1 bg-primary/70" />
         <span className="absolute left-0 top-0 h-5 w-5 border-l-2 border-t-2 border-muted-foreground/50" />
