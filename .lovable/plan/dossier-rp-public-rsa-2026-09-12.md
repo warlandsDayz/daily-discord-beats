@@ -10,7 +10,9 @@ Transformer la page d’accueil en dossier immersif sur les Racailles Sans Aveni
 - Raconter une identité RP sobre et crédible : implantation sur Altis, discrétion, loyauté et autonomie.
 - Ajouter un dossier d’activités autour du soufre, du tabac, de la logistique et des opérations du groupe.
 - Conserver l’état en direct du serveur Arma 3 dans la présentation.
-- Reprendre le logo fourni et l’ambiance sombre, urbaine et rouge déjà en place.
+- Reprendre le logo fourni et l’ambiance sombre, urbaine et rouge déjà en place.  
+
+- &nbsp;
 
 ## Accès privé
 
