@@ -168,6 +168,30 @@
   background-size: 5px 5px;
 }
 
+@utility dossier-cover {
+  background-image:
+    linear-gradient(to right, transparent 49.9%, color-mix(in oklch, var(--color-border) 22%, transparent) 50%, transparent 50.1%),
+    radial-gradient(circle at 1px 1px, color-mix(in oklch, var(--color-foreground) 4%, transparent) 1px, transparent 0);
+  background-size: 100% 100%, 5px 5px;
+}
+
+@utility dossier-sheet {
+  background-image:
+    linear-gradient(to bottom, transparent 97%, color-mix(in oklch, var(--color-border) 15%, transparent)),
+    radial-gradient(circle at 1px 1px, color-mix(in oklch, var(--color-foreground) 3%, transparent) 1px, transparent 0);
+  background-size: 100% 100%, 6px 6px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 @utility dossier-label {
   font-family: var(--font-dossier);
   font-size: 0.625rem;
