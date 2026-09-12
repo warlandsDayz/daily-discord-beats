@@ -50,32 +50,32 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --font-display: "Bebas Neue", "Arial Narrow", sans-serif;
-  --font-sans: "Barlow", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-display: "Space Mono", ui-monospace, monospace;
+  --font-sans: "Rubik", system-ui, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, monospace;
 }
 
 :root {
   --radius: 0.35rem;
-  --background: oklch(0.16 0.012 20);
-  --foreground: oklch(0.95 0.008 80);
-  --card: oklch(0.21 0.015 20);
-  --card-foreground: oklch(0.95 0.008 80);
+  --background: oklch(0.15 0.008 20);
+  --foreground: oklch(0.91 0.014 80);
+  --card: oklch(0.2 0.018 20);
+  --card-foreground: oklch(0.91 0.014 80);
   --popover: oklch(0.19 0.015 20);
   --popover-foreground: oklch(0.95 0.008 80);
-  --primary: oklch(0.55 0.213 27.5);
+  --primary: oklch(0.5 0.19 25);
   --primary-foreground: oklch(0.98 0.01 80);
-  --secondary: oklch(0.27 0.017 25);
+  --secondary: oklch(0.25 0.025 20);
   --secondary-foreground: oklch(0.95 0.008 80);
-  --muted: oklch(0.25 0.014 25);
-  --muted-foreground: oklch(0.68 0.014 60);
+  --muted: oklch(0.25 0.02 20);
+  --muted-foreground: oklch(0.66 0.014 70);
   --accent: oklch(0.32 0.05 30);
   --accent-foreground: oklch(0.96 0.01 80);
   --destructive: oklch(0.6 0.23 25);
   --destructive-foreground: oklch(0.98 0.01 80);
-  --border: oklch(0.3 0.02 25);
-  --input: oklch(0.3 0.02 25);
-  --ring: oklch(0.55 0.213 27.5);
+  --border: oklch(0.31 0.025 20);
+  --input: oklch(0.31 0.025 20);
+  --ring: oklch(0.5 0.19 25);
   --chart-1: oklch(0.55 0.213 27.5);
   --chart-2: oklch(0.7 0.13 60);
   --chart-3: oklch(0.6 0.1 200);
@@ -147,4 +147,30 @@
     transparent 0
   );
   background-size: 4px 4px;
+}
+
+@utility dossier-shell {
+  background-image:
+    linear-gradient(to right, color-mix(in oklch, var(--color-border) 20%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklch, var(--color-border) 15%, transparent) 1px, transparent 1px);
+  background-size: 42px 42px;
+}
+
+@utility dossier-page {
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    color-mix(in oklch, var(--color-foreground) 4%, transparent) 1px,
+    transparent 0
+  );
+  background-size: 5px 5px;
+}
+
+@utility dossier-label {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  line-height: 1rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-primary);
 }
