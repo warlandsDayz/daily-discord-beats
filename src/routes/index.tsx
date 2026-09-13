@@ -75,7 +75,7 @@ const ACTIVITES = [
 
 const REGLES = [
   ["La famille passe avant la marchandise", "Aucun bénéfice ne justifie de laisser un membre isolé, exposé ou abandonné."],
-  ["Quinze membres, quinze voix", "Les décisions majeures sont discutées ensemble. L’expérience guide, elle ne commande pas."],
+  ["Douze membres, douze voix", "Les décisions majeures sont discutées ensemble. L’expérience guide, elle ne commande pas."],
   ["La confiance se gagne sur le terrain", "La parole compte, mais la présence, la franchise et les actes comptent davantage."],
   ["La discrétion protège chacun", "Les affaires, les lieux et les habitudes de la famille ne quittent jamais son cercle."],
   ["Les réussites comme les erreurs sont communes", "Les profits se partagent et les conséquences ne reposent jamais sur une seule personne."],
@@ -129,7 +129,7 @@ function Index() {
         <section className="dossier-cover relative flex min-h-[calc(100svh-2.5rem)] flex-col overflow-hidden border border-border bg-card px-6 py-7 sm:min-h-[790px] sm:px-12 sm:py-10 lg:px-16">
           <div className="absolute inset-x-0 top-0 h-1 bg-primary" />
           <div className="flex items-start justify-between gap-5 border-b border-border pb-5 font-mono text-[9px] uppercase leading-4 text-muted-foreground">
-            <div><Classification>Confidentiel</Classification><p className="mt-2">Réf. RSA–ALTIS–015</p></div>
+            <div><Classification>Confidentiel</Classification><p className="mt-2">Réf. RSA–ALTIS–012</p></div>
             <div className="text-right"><p>Dossier de présentation</p><p className="text-primary">Sujet sous surveillance</p></div>
           </div>
 
@@ -137,7 +137,7 @@ function Index() {
             <div>
               <p className="dossier-label">Organisation indépendante · Altis</p>
               <h1 className="mt-5 max-w-3xl text-5xl font-bold leading-[0.95] sm:text-7xl lg:text-8xl">Racailles<br /><span className="text-primary">Sans Avenir</span></h1>
-              <p className="mt-7 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg">Rapport d’identification d’une famille de quinze individus liés par le travail, la confiance et une volonté commune d’imposer leur propre voie sur Altis.</p>
+              <p className="mt-7 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg">Rapport d’identification d’une famille de douze individus liés par le travail, la confiance et une volonté commune d’imposer leur propre voie sur Altis.</p>
             </div>
             <div className="relative mx-auto w-full max-w-[13rem] border border-border bg-background/40 p-5">
               <div className="absolute -right-4 -top-4 border border-primary/40 px-3 py-2 font-mono text-[9px] font-bold uppercase text-primary rotate-3">Pièce A-01</div>
@@ -147,7 +147,7 @@ function Index() {
           </div>
 
           <div className="grid grid-cols-3 border-y border-border text-center">
-            <div className="py-4"><strong className="block text-2xl">15</strong><span className="font-mono text-[8px] uppercase text-muted-foreground">Membres</span></div>
+            <div className="py-4"><strong className="block text-2xl">12</strong><span className="font-mono text-[8px] uppercase text-muted-foreground">Membres</span></div>
             <div className="border-x border-border py-4"><strong className="block text-2xl">0</strong><span className="font-mono text-[8px] uppercase text-muted-foreground">Chef</span></div>
             <div className="py-4"><strong className="block text-2xl text-primary">1</strong><span className="font-mono text-[8px] uppercase text-muted-foreground">Famille</span></div>
           </div>
@@ -167,7 +167,7 @@ function Index() {
           <SectionHeader number="01" label="Note de synthèse" title="Une famille avant tout" />
           <div className="grid gap-10 lg:grid-cols-[1.35fr_0.65fr] lg:gap-16">
             <div className="space-y-5 text-base leading-8 text-muted-foreground">
-              <p className="text-xl font-medium leading-8 text-foreground">Les Racailles Sans Avenir forment une famille de quinze personnes implantée sur l’île d’Altis. Elles n’obéissent ni à un chef permanent ni à une hiérarchie figée.</p>
+              <p className="text-xl font-medium leading-8 text-foreground">Les Racailles Sans Avenir forment une famille de douze personnes implantée sur l’île d’Altis. Elles n’obéissent ni à un chef permanent ni à une hiérarchie figée.</p>
               <p>Le groupe s’est construit autour d’une certitude simple : personne n’avance seul. Chaque voix pèse dans les décisions et chaque membre trouve sa place selon la situation, ses aptitudes et la confiance gagnée au fil des opérations.</p>
               <p>RSA cherche aujourd’hui à consolider une économie clandestine durable, avec l’héroïne comme axe de développement majeur, sans renoncer aux activités qui ont façonné sa cohésion.</p>
             </div>
@@ -193,7 +193,7 @@ function Index() {
         </DossierPage>
 
         <DossierPage muted>
-          <SectionHeader number="03" label="Structure familiale" title="Quinze voix égales" />
+          <SectionHeader number="03" label="Structure familiale" title="Douze voix égales" />
           <div className="grid gap-px border border-border bg-border md:grid-cols-3">
             {[
               [Users, "Décider", "Les choix importants sont discutés par les membres concernés. Aucun titre ne donne le dernier mot."],
@@ -256,7 +256,7 @@ function Index() {
                 <dt className="text-muted-foreground">Nom</dt><dd className="font-semibold">Racailles Sans Avenir</dd>
                 <dt className="text-muted-foreground">Abréviation</dt><dd className="font-semibold">RSA</dd>
                 <dt className="text-muted-foreground">Territoire</dt><dd className="flex items-center gap-2 font-semibold"><MapPin className="h-3.5 w-3.5 text-primary" /> Altis</dd>
-                <dt className="text-muted-foreground">Effectif</dt><dd className="font-semibold">15 membres</dd>
+                <dt className="text-muted-foreground">Effectif</dt><dd className="font-semibold">12 membres</dd>
                 <dt className="text-muted-foreground">Direction</dt><dd className="font-semibold">Collégiale</dd>
                 <dt className="text-muted-foreground">Activités</dt><dd className="font-semibold">Héroïne, go-fast, soufre, tabac</dd>
               </dl>
@@ -268,7 +268,7 @@ function Index() {
         <footer className="dossier-sheet relative border border-t-0 border-border bg-card px-6 py-14 text-center sm:px-12 sm:py-20">
           <img src={logo} alt="Sceau RSA" width={96} height={96} className="mx-auto h-20 w-20 object-contain opacity-80" />
           <p className="mt-7 text-2xl font-bold sm:text-4xl">La famille avant le reste.</p>
-          <p className="mt-3 font-mono text-[10px] font-bold uppercase text-primary">Quinze membres · aucune couronne · une seule parole</p>
+          <p className="mt-3 font-mono text-[10px] font-bold uppercase text-primary">Douze membres · aucune couronne · une seule parole</p>
           <div className="mt-12 flex items-end justify-between border-t border-border pt-6">
             <div className="text-left font-mono text-[8px] uppercase leading-4 text-muted-foreground/50"><p>Clôture du dossier</p><p>RSA / Altis / {new Date().getFullYear()}</p></div>
             <Link to={connected ? "/panel" : "/auth"} aria-label={connected ? "Ouvrir l’espace membre" : "Connexion Discord"} title={connected ? "Espace membre" : "Connexion Discord"} className="flex h-7 w-7 items-center justify-center text-muted-foreground/15 transition-colors hover:text-primary focus-visible:text-primary focus-visible:outline-none"><DiscordMark /></Link>
