@@ -146,6 +146,7 @@ export type Database = {
           for_date: string
           frequency: number
           id: string
+          kind: string
           source: string
         }
         Insert: {
@@ -156,6 +157,7 @@ export type Database = {
           for_date: string
           frequency: number
           id?: string
+          kind?: string
           source?: string
         }
         Update: {
@@ -166,6 +168,7 @@ export type Database = {
           for_date?: string
           frequency?: number
           id?: string
+          kind?: string
           source?: string
         }
         Relationships: []
