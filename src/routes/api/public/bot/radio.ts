@@ -26,12 +26,16 @@ export const Route = createFileRoute("/api/public/bot/radio")({
       GET: async ({ request }) => {
         const denied = await authorize(request);
         if (denied) return denied;
-        const { latestFrequency } = await import("@/lib/radio.server");
-        const current = await latestFrequency();
+        const { currentFrequencies } = await import("@/lib/radio.server");
+        const current = await currentFrequencies();
         return Response.json({
           ok: true,
-          frequency: current ? Number(current.frequency) : null,
-          for_date: current?.for_date ?? null,
+          frequency: current.farmeur ? Number(current.farmeur.frequency) : null,
+          frequencies: {
+            farmeur: current.farmeur ? Number(current.farmeur.frequency) : null,
+            bandit: current.bandit ? Number(current.bandit.frequency) : null,
+          },
+          for_date: current.farmeur?.for_date ?? current.bandit?.for_date ?? null,
         });
       },
       POST: async ({ request }) => {

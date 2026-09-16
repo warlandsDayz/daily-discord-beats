@@ -111,11 +111,12 @@ client.on(Events.InteractionCreate, async (interaction) => {
     if (interaction.commandName === "radio-actuelle") {
       await interaction.deferReply({ flags: MessageFlags.Ephemeral });
       const data = await api("GET");
+      const freqs = data.frequencies ?? { farmeur: data.frequency, bandit: null };
       await interaction.editReply({
         embeds: [
-          data.frequency
-            ? radioEmbed(data.frequency, {
-                note: data.for_date ? `Générée le ${data.for_date}` : undefined,
+          freqs.farmeur || freqs.bandit
+            ? radioEmbed(freqs, {
+                note: data.for_date ? `Générées le ${data.for_date}` : undefined,
               })
             : emptyRadioEmbed(),
         ],
@@ -128,7 +129,10 @@ client.on(Events.InteractionCreate, async (interaction) => {
       const data = await api("POST", { actor });
       await interaction.editReply({
         embeds: [
-          newRadioEmbed(data.frequency, { actor: `<@${interaction.user.id}>`, posted: data.posted }),
+          newRadioEmbed(data.frequencies ?? { farmeur: data.frequency, bandit: null }, {
+            actor: `<@${interaction.user.id}>`,
+            posted: data.posted,
+          }),
         ],
       });
       return;

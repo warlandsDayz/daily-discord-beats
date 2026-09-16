@@ -49,22 +49,28 @@ export async function postChannelEmbed(
 const RSA_RED = 0xc1121f;
 const SITE_URL = "https://rsa.baccuarnaud.dev";
 
-/** Embed propre pour annoncer une fréquence dans le salon. */
+/** Embed propre pour annoncer les fréquences du jour dans le salon. */
 export function buildRadioEmbed(
-  frequency: number,
+  frequencies: { farmeur: number; bandit: number },
   opts: { title?: string; source?: string; actor?: string | null } = {},
 ): DiscordEmbed {
-  const freq = frequency.toFixed(1);
+  const farmeur = frequencies.farmeur.toFixed(1);
+  const bandit = frequencies.bandit.toFixed(1);
   return {
     author: { name: "Réseau radio RSA" },
-    title: opts.title ?? "📻 Fréquence RSA du jour",
+    title: opts.title ?? "📻 Fréquences RSA du jour",
     description:
-      "Passez tous sur cette fréquence. Restez discrets.\n" +
-      "```ansi\n\u001b[1;31m" + freq + "\u001b[0m\n```",
+      "Deux canaux séparés. Chacun reste sur le sien, et on reste discrets.\n" +
+      "```ansi\n\u001b[1;32mFARMEURS " +
+      farmeur +
+      "\u001b[0m\n\u001b[1;31mBANDITS  " +
+      bandit +
+      "\u001b[0m\n```",
     color: RSA_RED,
     thumbnail: { url: `${SITE_URL}/favicon.png` },
     fields: [
-      { name: "Fréquence", value: `**${freq}**`, inline: true },
+      { name: "🌿 Réservée farmeurs", value: `**${farmeur}**`, inline: true },
+      { name: "🔫 Réservée bandits", value: `**${bandit}**`, inline: true },
       { name: "Plage", value: "30.0 – 512.0", inline: true },
       ...(opts.source ? [{ name: "Origine", value: opts.source, inline: true }] : []),
       ...(opts.actor ? [{ name: "Par", value: opts.actor, inline: true }] : []),

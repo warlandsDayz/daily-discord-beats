@@ -36,7 +36,7 @@ export const Route = createFileRoute("/api/public/discord/interactions")({
         const actor = user ? `${user.username ?? "?"} (${user.id ?? "?"})` : "inconnu";
         const name = interaction.data?.name;
 
-        const { generateAndAnnounce, latestFrequency, logBot } = await import(
+        const { generateAndAnnounce, currentFrequencies, logBot } = await import(
           "@/lib/radio.server"
         );
 
@@ -48,19 +48,26 @@ export const Route = createFileRoute("/api/public/discord/interactions")({
 
         try {
           if (name === "radio-actuelle") {
-            const current = await latestFrequency();
+            const current = await currentFrequencies();
+            if (!current.farmeur && !current.bandit) {
+              return reply("Aucune fréquence enregistrée pour le moment.");
+            }
             return reply(
-              current
-                ? `📻 Fréquence en cours : \`${Number(current.frequency).toFixed(1)}\``
-                : "Aucune fréquence enregistrée pour le moment.",
+              `📻 Fréquences en cours :\n🌿 Farmeurs : \`${
+                current.farmeur ? Number(current.farmeur.frequency).toFixed(1) : "—"
+              }\`\n🔫 Bandits : \`${
+                current.bandit ? Number(current.bandit.frequency).toFixed(1) : "—"
+              }\``,
             );
           }
 
           if (name === "radio") {
             const result = await generateAndAnnounce({ source: "commande", actor });
             return reply(
-              `Nouvelle fréquence générée : \`${result.frequency.toFixed(1)}\`${
-                result.posted ? "" : " (publication dans le salon impossible)"
+              `Nouvelles fréquences générées :\n🌿 Farmeurs : \`${result.frequencies.farmeur.toFixed(
+                1,
+              )}\`\n🔫 Bandits : \`${result.frequencies.bandit.toFixed(1)}\`${
+                result.posted ? "" : "\n(publication dans le salon impossible)"
               }`,
             );
           }

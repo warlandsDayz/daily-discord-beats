@@ -1,11 +1,21 @@
-// Server-only logic for the daily radio frequency.
+// Server-only logic for the daily radio frequencies (farmeur + bandit).
 import { buildRadioEmbed, deleteChannelMessage, postChannelEmbed } from "./discord.server";
+
+export type RadioKind = "farmeur" | "bandit";
+
+export const RADIO_KINDS: RadioKind[] = ["farmeur", "bandit"];
+
+export const RADIO_LABELS: Record<RadioKind, string> = {
+  farmeur: "Farmeurs",
+  bandit: "Bandits",
+};
 
 export type RadioRow = {
   id: string;
   frequency: number;
   for_date: string;
   source: string;
+  kind: RadioKind;
   created_by: string | null;
   created_at: string;
   discord_message_id?: string | null;
@@ -25,11 +35,12 @@ export async function radioChannelId(): Promise<string | null> {
   return data?.channel_id ?? process.env["DISCORD_CHANNEL_ID"] ?? null;
 }
 
-export function randomFrequency(exclude?: number | null): number {
+export function randomFrequency(exclude: (number | null | undefined)[] = []): number {
+  const blocked = exclude.filter((v): v is number => typeof v === "number");
   let value = 0;
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 30; i++) {
     value = Math.round((30 + Math.random() * (512 - 30)) * 10) / 10;
-    if (value !== exclude) break;
+    if (!blocked.includes(value)) break;
   }
   return value;
 }
@@ -53,65 +64,104 @@ export async function logBot(
   await supabaseAdmin.from("bot_logs").insert({ action, message, actor, level });
 }
 
-export async function latestFrequency(): Promise<RadioRow | null> {
+/** Dernière fréquence enregistrée, éventuellement filtrée par type. */
+export async function latestFrequency(kind?: RadioKind): Promise<RadioRow | null> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { data } = await supabaseAdmin
+  let query = supabaseAdmin
     .from("radio_frequencies")
     .select("*")
     .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    .limit(1);
+  if (kind) query = query.eq("kind", kind);
+  const { data } = await query.maybeSingle();
   return (data as RadioRow | null) ?? null;
 }
 
+/** Les deux fréquences en cours. */
+export async function currentFrequencies(): Promise<Record<RadioKind, RadioRow | null>> {
+  const [farmeur, bandit] = await Promise.all([
+    latestFrequency("farmeur"),
+    latestFrequency("bandit"),
+  ]);
+  return { farmeur, bandit };
+}
+
 /**
- * Creates a new frequency, stores it and announces it on Discord.
- * `force` = triggered manually (slash command or chef panel).
+ * Génère les deux fréquences du jour (farmeurs + bandits), les enregistre
+ * et publie une annonce unique sur Discord (l'ancienne est supprimée).
  */
 export async function generateAndAnnounce(opts: {
   source: "cron" | "commande" | "panel";
   actor?: string | null;
   skipIfExistsToday?: boolean;
-}): Promise<{ created: boolean; frequency: number; posted: boolean }> {
+}): Promise<{
+  created: boolean;
+  posted: boolean;
+  frequencies: Record<RadioKind, number>;
+  /** Compat : fréquence farmeur. */
+  frequency: number;
+}> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const today = parisDate();
-  const previous = await latestFrequency();
+  const previous = await currentFrequencies();
 
-  if (opts.skipIfExistsToday && previous && previous.for_date === today) {
-    return { created: false, frequency: Number(previous.frequency), posted: false };
+  const alreadyToday =
+    previous.farmeur?.for_date === today && previous.bandit?.for_date === today;
+  if (opts.skipIfExistsToday && alreadyToday) {
+    return {
+      created: false,
+      posted: false,
+      frequency: Number(previous.farmeur!.frequency),
+      frequencies: {
+        farmeur: Number(previous.farmeur!.frequency),
+        bandit: Number(previous.bandit!.frequency),
+      },
+    };
   }
 
-  const frequency = randomFrequency(previous ? Number(previous.frequency) : null);
+  const farmeurFreq = randomFrequency([previous.farmeur?.frequency, previous.bandit?.frequency]);
+  const banditFreq = randomFrequency([
+    previous.farmeur?.frequency,
+    previous.bandit?.frequency,
+    farmeurFreq,
+  ]);
+  const frequencies: Record<RadioKind, number> = { farmeur: farmeurFreq, bandit: banditFreq };
+
   const { data: inserted, error } = await supabaseAdmin
     .from("radio_frequencies")
-    .insert({
-      frequency,
-      for_date: today,
-      source: opts.source,
-      created_by: opts.actor ?? null,
-    })
-    .select("id")
-    .maybeSingle();
+    .insert(
+      RADIO_KINDS.map((kind) => ({
+        frequency: frequencies[kind],
+        for_date: today,
+        source: opts.source,
+        kind,
+        created_by: opts.actor ?? null,
+      })),
+    )
+    .select("id, kind");
   if (error) throw new Error(error.message);
 
   let posted = false;
   try {
     const channelId = await radioChannelId();
     if (channelId) {
-      // On efface l'annonce précédente pour ne garder qu'un seul message radio.
-      if (previous?.discord_message_id) {
-        await deleteChannelMessage(
-          previous.discord_channel_id ?? channelId,
-          previous.discord_message_id,
-        ).catch(() => {});
+      // On efface les annonces précédentes pour ne garder qu'un seul message radio.
+      const seen = new Set<string>();
+      for (const row of [previous.farmeur, previous.bandit]) {
+        if (row?.discord_message_id && !seen.has(row.discord_message_id)) {
+          seen.add(row.discord_message_id);
+          await deleteChannelMessage(
+            row.discord_channel_id ?? channelId,
+            row.discord_message_id,
+          ).catch(() => {});
+        }
       }
+
       const message = (await postChannelEmbed(
         channelId,
-        buildRadioEmbed(frequency, {
+        buildRadioEmbed(frequencies, {
           title:
-            opts.source === "cron"
-              ? "📻 Fréquence RSA du jour"
-              : "🔴 Nouvelle fréquence RSA",
+            opts.source === "cron" ? "📻 Fréquences RSA du jour" : "🔴 Nouvelles fréquences RSA",
           source:
             opts.source === "cron"
               ? "Génération quotidienne"
@@ -122,27 +172,31 @@ export async function generateAndAnnounce(opts: {
         }),
       )) as { id?: string } | null;
       posted = true;
-      if (inserted?.id && message?.id) {
+
+      const ids = (inserted ?? []).map((row) => row.id);
+      if (ids.length > 0 && message?.id) {
         await supabaseAdmin
           .from("radio_frequencies")
           .update({ discord_message_id: message.id, discord_channel_id: channelId })
-          .eq("id", inserted.id);
+          .in("id", ids);
       }
     }
     await logBot(
       "radio",
-      `Fréquence ${frequency.toFixed(1)} (${opts.source})${posted ? " publiée sur Discord" : " — aucun salon configuré"}`,
+      `Fréquences farmeurs ${farmeurFreq.toFixed(1)} / bandits ${banditFreq.toFixed(1)} (${opts.source})${
+        posted ? " publiées sur Discord" : " — aucun salon configuré"
+      }`,
       opts.actor ?? null,
       posted ? "info" : "error",
     );
   } catch (err) {
     await logBot(
       "radio",
-      `Fréquence ${frequency.toFixed(1)} enregistrée mais publication Discord échouée : ${String(err)}`,
+      `Fréquences enregistrées mais publication Discord échouée : ${String(err)}`,
       opts.actor ?? null,
       "error",
     );
   }
 
-  return { created: true, frequency, posted };
+  return { created: true, posted, frequency: farmeurFreq, frequencies };
 }

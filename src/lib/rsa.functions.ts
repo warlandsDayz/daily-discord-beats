@@ -31,7 +31,7 @@ export const forceRadio = createServerFn({ method: "POST" })
     const { generateAndAnnounce } = await import("@/lib/radio.server");
     const actor = await actorLabel(context.userId);
     const result = await generateAndAnnounce({ source: "panel", actor });
-    return { frequency: result.frequency, posted: result.posted };
+    return { frequencies: result.frequencies, posted: result.posted };
   });
 
 export const renameBot = createServerFn({ method: "POST" })
