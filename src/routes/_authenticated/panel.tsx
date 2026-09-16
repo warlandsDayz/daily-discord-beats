@@ -99,13 +99,16 @@ function Panel() {
         .from("radio_frequencies")
         .select("*")
         .order("created_at", { ascending: false })
-        .limit(8);
+        .limit(16);
       if (error) throw new Error(error.message);
       return data;
     },
   });
 
-  const current = frequencies.data?.[0];
+  const rows = frequencies.data ?? [];
+  const currentFarmeur = rows.find((f) => f.kind === "farmeur");
+  const currentBandit = rows.find((f) => f.kind === "bandit");
+  const history = rows.filter((f) => f !== currentFarmeur && f !== currentBandit);
 
   return (
     <div className="min-h-screen bg-background">
