@@ -16,24 +16,28 @@ function base(color) {
     .setTimestamp(new Date());
 }
 
-export function radioEmbed(frequency, { title, note } = {}) {
-  const freq = Number(frequency).toFixed(1);
+const fmt = (v) => (v === null || v === undefined ? "—" : Number(v).toFixed(1));
+
+/** `frequencies` = { farmeur, bandit } */
+export function radioEmbed(frequencies, { title, note } = {}) {
+  const farmeur = fmt(frequencies?.farmeur);
+  const bandit = fmt(frequencies?.bandit);
   return base(RSA_RED)
     .setAuthor({ name: "Réseau radio RSA" })
-    .setTitle(title ?? "📻 Fréquence en cours")
-    .setDescription(`\`\`\`ansi\n\u001b[1;31m${freq}\u001b[0m\n\`\`\``)
+    .setTitle(title ?? "📻 Fréquences en cours")
+    .setDescription(
+      `\`\`\`ansi\n\u001b[1;32mFARMEURS ${farmeur}\u001b[0m\n\u001b[1;31mBANDITS  ${bandit}\u001b[0m\n\`\`\``,
+    )
     .addFields(
-      { name: "Fréquence", value: `**${freq}**`, inline: true },
+      { name: "🌿 Réservée farmeurs", value: `**${farmeur}**`, inline: true },
+      { name: "🔫 Réservée bandits", value: `**${bandit}**`, inline: true },
       { name: "Plage", value: "30.0 – 512.0", inline: true },
       ...(note ? [{ name: "Info", value: note }] : []),
     );
 }
 
-export function newRadioEmbed(frequency, { actor, posted } = {}) {
-  const embed = radioEmbed(frequency, { title: "🔴 Nouvelle fréquence RSA" }).setDescription(
-    `La fréquence a été régénérée. Passez tous sur **${Number(frequency).toFixed(1)}**.\n\n` +
-      `\`\`\`ansi\n\u001b[1;31m${Number(frequency).toFixed(1)}\u001b[0m\n\`\`\``,
-  );
+export function newRadioEmbed(frequencies, { actor, posted } = {}) {
+  const embed = radioEmbed(frequencies, { title: "🔴 Nouvelles fréquences RSA" });
   if (actor) embed.addFields({ name: "Demandée par", value: actor, inline: true });
   if (posted === false) {
     embed.addFields({ name: "⚠️ Attention", value: "Publication dans le salon impossible." });

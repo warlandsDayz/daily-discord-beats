@@ -140,32 +140,43 @@ function Panel() {
               </div>
             </div>
 
-            <section className="mt-10 rounded-xl border border-border bg-card p-8 text-center">
-              <p className="font-mono text-xs uppercase tracking-[0.35em] text-muted-foreground">
-                Fréquence du jour
-              </p>
-              <p className="mt-3 font-mono text-6xl font-bold text-primary">
-                {current ? Number(current.frequency).toFixed(1) : "—"}
-              </p>
-              <p className="mt-3 text-sm text-muted-foreground">
-                Prochain changement dans environ {nextChangeLabel()}
-              </p>
+            <section className="mt-10 grid gap-4 sm:grid-cols-2">
+              <div className="rounded-xl border border-border bg-card p-8 text-center">
+                <p className="font-mono text-xs uppercase tracking-[0.35em] text-muted-foreground">
+                  🌿 Réservée farmeurs
+                </p>
+                <p className="mt-3 font-mono text-5xl font-bold text-primary">
+                  {currentFarmeur ? Number(currentFarmeur.frequency).toFixed(1) : "—"}
+                </p>
+              </div>
+              <div className="rounded-xl border border-border bg-card p-8 text-center">
+                <p className="font-mono text-xs uppercase tracking-[0.35em] text-muted-foreground">
+                  🔫 Réservée bandits
+                </p>
+                <p className="mt-3 font-mono text-5xl font-bold text-primary">
+                  {currentBandit ? Number(currentBandit.frequency).toFixed(1) : "—"}
+                </p>
+              </div>
             </section>
+            <p className="mt-3 text-center text-sm text-muted-foreground">
+              Prochain changement dans environ {nextChangeLabel()}
+            </p>
 
             <ArmaStatus className="mt-6" />
 
             <section className="mt-10">
               <h2 className="text-2xl">Dernières fréquences</h2>
               <ul className="mt-4 divide-y divide-border rounded-lg border border-border">
-                {(frequencies.data ?? []).slice(1).map((f) => (
+                {history.map((f) => (
                   <li key={f.id} className="flex items-center justify-between px-4 py-3 text-sm">
                     <span className="text-muted-foreground">
-                      {new Date(f.created_at).toLocaleDateString("fr-FR")}
+                      {new Date(f.created_at).toLocaleDateString("fr-FR")} ·{" "}
+                      {f.kind === "bandit" ? "Bandits" : "Farmeurs"}
                     </span>
                     <span className="font-mono">{Number(f.frequency).toFixed(1)}</span>
                   </li>
                 ))}
-                {(frequencies.data ?? []).length <= 1 ? (
+                {history.length === 0 ? (
                   <li className="px-4 py-3 text-sm text-muted-foreground">
                     Pas encore d'historique.
                   </li>
