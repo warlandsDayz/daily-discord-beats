@@ -150,16 +150,21 @@ function ChefPanel() {
 
         <Card title="Radio">
           <p className="text-sm text-muted-foreground">
-            Force une nouvelle fréquence immédiatement et la publie dans le salon configuré.
+            Force deux nouvelles fréquences (farmeurs et bandits) et les publie dans le salon
+            configuré.
           </p>
           <button
             className={btnClass}
             disabled={busy === "radio"}
             onClick={() =>
-              run("radio", () => callForceRadio({ data: undefined }), "Nouvelle fréquence générée")
+              run(
+                "radio",
+                () => callForceRadio({ data: undefined }),
+                "Nouvelles fréquences générées",
+              )
             }
           >
-            {busy === "radio" ? "Génération…" : "Générer une nouvelle fréquence"}
+            {busy === "radio" ? "Génération…" : "Générer de nouvelles fréquences"}
           </button>
         </Card>
 
